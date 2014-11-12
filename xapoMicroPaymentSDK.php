@@ -52,7 +52,7 @@
       $customization->predefined_pay_values = $request->predefined_pay_values;
       $customization->end_mpayment_uri = $request->end_mpayment_uri;
       $customization->redirect_uri = $request->redirect_uri;
-      $customization->button_css_url = $request->button_css_url;
+      $customization->button_css = $request->button_css;
       
       $queryStrObj = new stdClass;
       $queryStrObj->customization = json_encode($customization);
@@ -78,8 +78,10 @@
       return $res;
     }
     
+    //pay_type possible values: pay, tip, deposit, donation
+    //button_css possible values: red, grey
     static public function iframeWidget($sender_user_id, $sender_user_email, $sender_user_cellphone, $receiver_user_id, $receiver_user_email, $pay_object_id, 
-          $amount_BIT, $pay_type, $reference_code, $predefined_pay_values, $end_mpayment_uri, $redirect_uri, $button_css_url)
+          $amount_BIT, $pay_type, $reference_code, $predefined_pay_values, $end_mpayment_uri, $redirect_uri, $button_css)
     {
       $buttonRequestObj = new stdClass();
       $buttonRequestObj->sender_user_id = $sender_user_id;
@@ -95,7 +97,7 @@
       $buttonRequestObj->predefined_pay_values = $predefined_pay_values; 
       $buttonRequestObj->end_mpayment_uri = $end_mpayment_uri; 
       $buttonRequestObj->redirect_uri = $redirect_uri; 
-      $buttonRequestObj->button_css_url = $button_css_url;        
+      $buttonRequestObj->button_css = $button_css;        
       
       $res = XapoMicroPaymentSDK::buildIframeWidget($buttonRequestObj);
       return $res;
