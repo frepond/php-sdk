@@ -80,6 +80,8 @@
     
     //pay_type possible values: pay, tip, deposit, donation
     //button_css possible values: red, grey
+    //redirect_uri callback to be invoked by http get with the following query parameters: resultCode, resultDescription, sender_user_id, receiver_user_id, pay_object_id, amount_BIT, reference_code
+    //mandatory fields: sender_user_id, receiver_user_id, receiver_user_email, pay_object_id
     static public function iframeWidget($sender_user_id, $sender_user_email, $sender_user_cellphone, $receiver_user_id, $receiver_user_email, $pay_object_id, 
           $amount_BIT, $pay_type, $reference_code, $predefined_pay_values, $end_mpayment_uri, $redirect_uri, $button_css)
     {
