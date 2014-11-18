@@ -66,11 +66,11 @@
       return $res;
     }
     
+    //mandatory fields: sender_user_id, receiver_user_id, receiver_user_email, pay_object_id
     //pay_type possible values: pay, tip, deposit, donation
     //button_css possible values: red, grey
-    //redirect_uri callback to be invoked by http get with the following query parameters: reference_code, request_UID
+    //redirect_uri callback to be invoked by http get with the following query parameters: id, reference_code
     //end_mpayment_redirect_uri callback by redirect at the end of the flow
-    //mandatory fields: sender_user_id, receiver_user_id, receiver_user_email, pay_object_id
     static public function iframeWidget($sender_user_id, $sender_user_email, $sender_user_cellphone, $receiver_user_id, $receiver_user_email, $pay_object_id, 
           $amount_BIT, $pay_type, $reference_code, $end_mpayment_uri, $end_mpayment_redirect_uri, $redirect_uri, $predefined_pay_values, $button_css, $login_cellphone_header_title)
     {
