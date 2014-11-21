@@ -1,50 +1,38 @@
 <?php
-	// Xapo credit API example.
+    require 'XapoUtil.php';
 
-	// payload encryption and calling function (this could be reused in your own code)
-	class XapoAPIUtil {
-		// payload encryption method
-    	static public function encrypt($value, $key) {
-        	if (!empty($value)) {
-          		return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $value, 'ecb'));
-        	} else {
-          		return '';
-        	}
-    	}
+    // Xapo Credit API
+    class XapoCreditAPI {          
+      public $appID;
+      public $appSecret;
+      public $serviceUrl;
 
-    	// REST API call method
-    	static function callAPI($method, $url, $data = false) {
-    		$curl = curl_init();
+      function __construct($serviceUrl, $appID, $appSecret) {
+        $this->serviceUrl = $serviceUrl;
+        $this->appID = $appID;
+        $this->appSecret = $appSecret;
+        $this->resource = "/credit/";
+      } 
+  
+      public function credit($to, $currency, $unique_request_id, $amount, $comments) {
+        // build the payload
+        $payload = new stdClass;
+        $payload->to = $to;
+        $payload->currency = $currency;
+        $payload->amount = $amount;
+        $payload->comments = $comments;
+        $payload->timestamp = time();
+        $payload->unique_request_id = $unique_request_id;
 
-    		switch ($method) {
-        		case "POST":
-            		curl_setopt($curl, CURLOPT_POST, true);
+        // convert to json and encrypt
+        $json = json_encode($payload);
+        $hash = XapoUtil::encrypt($json, $this->appSecret);
+        $payload = array("appID" => $this->appID, "hash" => $hash);
 
-            		if ($data)
-                		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            		break;
-        		case "PUT":
-            		curl_setopt($curl, CURLOPT_PUT, true);
-            		break;
-        		default:
-            		if ($data)
-                		$url = sprintf("%s?%s", $url, http_build_query($data));
-    		}
+        // call de API
+        $result = XapoUtil::callAPI("POST", $this->serviceUrl . $this->resource, $payload);
 
-    		curl_setopt($curl, CURLOPT_URL, $url);
-    		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-    		$result = curl_exec($curl);
-
-    		if ($result === false) {
-    			$info = curl_getinfo($curl);
-    			curl_close($curl);
-    			die('error occured during curl exec. Additioanl info: ' . var_export($info));
-			}
-
-    		curl_close($curl);
-
-    		return $result;
-		}
-  }
+        return json_decode($result);
+      }
+    }
 ?>
